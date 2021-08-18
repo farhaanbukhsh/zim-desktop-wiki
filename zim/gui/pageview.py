@@ -242,6 +242,7 @@ SCROLL_TO_MARK_MARGIN = 0.2
 
 # Regexes used for autoformatting
 heading_re = Re(r'^(={2,7})\s*(.*?)(\s=+)?$')
+double_brakcet_re = Re(r'\[\[(.*?)\]\]')
 page_re = Re(r'''(
 	  [\w\.\-\(\)]*(?: :[\w\.\-\(\)]{2,} )+:?
 	| \+\w[\w\.\-\(\)]+(?: :[\w\.\-\(\)]{2,} )*:?
@@ -4504,6 +4505,9 @@ class TextView(Gtk.TextView):
 			buffer.insert_with_tags_by_name(
 				buffer.get_iter_at_mark(mark), heading, 'style-h' + str(level))
 			buffer.delete_mark(mark)
+		elif double_brakcet_re.match(line):
+			new_link = double_brakcet_re[1]
+			buffer._create_link_tag(new_link, new_link)
 		elif is_line(line):
 			with buffer.user_action:
 				offset = start.get_offset()
